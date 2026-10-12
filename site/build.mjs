@@ -12,7 +12,7 @@ export const INDEXNOW_KEY = '16a95bc4e36dd4bfccdadbf4e9ef96ba';
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(path.join(out, 'hi'), { recursive: true });
 fs.cpSync(path.join(here, 'assets'), path.join(out, 'assets'), { recursive: true });
-fs.cpSync(path.join(here, 'static'), out, { recursive: true });
+if (fs.existsSync(path.join(here, 'static'))) fs.cpSync(path.join(here, 'static'), out, { recursive: true });
 
 const urls = [];
 for (const [file, lang, page, fn, alt] of PAGES) {
