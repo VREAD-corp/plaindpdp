@@ -107,7 +107,7 @@ test('early-access form: consent required, then the row reaches the Sheet, then 
   await expect(page.locator('#po-error')).toContainText('consent');
   await page.locator('#po-consent').check();
   await page.getByRole('button', { name: /Join early access/ }).click();
-  await expect(page.locator('#po-ok')).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator("#po-ok")).toBeVisible({ timeout: 75_000 });
   await shot(page, 'preorder-ok', info);
   let s = await api({ action: 'summary', key, email });
   expect(s.ok).toBe(true);
@@ -116,7 +116,7 @@ test('early-access form: consent required, then the row reaches the Sheet, then 
   await page.goto('privacy.html?p=b');
   await page.fill('#r-email', email);
   await page.getByRole('button', { name: 'Send request' }).click();
-  await expect(page.locator('#r-ok')).toContainText('removed', { timeout: 30_000 });
+  await expect(page.locator('#r-ok')).toContainText("removed", { timeout: 75_000 });
   s = await api({ action: 'summary', key, email });
   expect(s.hasEmail).toBe(false);
 });
@@ -130,5 +130,5 @@ test('anonymous tracking increments the daily counters', async ({ page }) => {
   for (const q of QUESTIONS) await page.locator(`#q-${q.id} input[value="yes"]`).check();
   await page.getByRole('button', { name: 'See my score and gap list' }).click();
   await expect(page.locator('#score-num')).toHaveText('100');
-  await expect.poll(async () => { const a = await api({ action: 'summary', key }); return [views(a) > views(before), completes(a) > completes(before)]; }, { timeout: 45_000, intervals: [2000] }).toEqual([true, true]);
+  await expect.poll(async () => { const a = await api({ action: 'summary', key }); return [views(a) > views(before), completes(a) > completes(before)]; }, { timeout: 90_000, intervals: [3000] }).toEqual([true, true]);
 });

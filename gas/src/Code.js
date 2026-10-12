@@ -116,9 +116,9 @@ function rateOk_(bucket, max) {
   return true;
 }
 
-function withLock_(fn) {
+function withLock_(fn, waitMs) {
   var lock = LockService.getScriptLock();
-  if (!lock.tryLock(15000)) throw userError_('busy');
+  if (!lock.tryLock(waitMs || 28000)) throw userError_('busy');
   try { return fn(); } finally { lock.releaseLock(); }
 }
 
@@ -158,7 +158,8 @@ function validateTrack_(req) {
 function track_(req) {
   var hit = validateTrack_(req);
   if (!rateOk_('track', APP.ratePerMin)) return { ok: false, error: 'rate_limited' };
-  withLock_(function () { incrementStat_(hit); });
+  // A dropped count is acceptable; a sign-up waiting behind a burst of hits is not: short wait here.
+  try { withLock_(function () { incrementStat_(hit); }, 8000); } catch (e) { if (e.userError) return { ok: false, error: 'busy' }; throw e; }
   return { ok: true };
 }
 

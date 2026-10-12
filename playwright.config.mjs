@@ -4,7 +4,7 @@ const live = process.env.BASE_URL;
 export default defineConfig({
   testDir: 'tests/e2e',
   workers: 1,
-  timeout: 90_000,
+  timeout: 240_000,
   retries: live ? 1 : 0,
   reporter: [['list']],
   use: { baseURL: live ?? 'http://localhost:4810/plaindpdp/', acceptDownloads: true, screenshot: 'only-on-failure' },

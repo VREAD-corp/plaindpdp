@@ -27,9 +27,12 @@
     a.setAttribute('href', parts[0] + '?p=' + variant + (parts[1] ? '#' + parts[1] : ''));
   });
 
-  var post = function (body) {
+  // Apps Script can take 5 to 20 s to answer; one retry when it reports 'busy' or the network fails.
+  var post = function (body, retried) {
     return fetch(EP, { method: 'POST', body: JSON.stringify(body), credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=utf-8' } })
-      .then(function (r) { return r.json(); });
+      .then(function (r) { return r.json(); })
+      .then(function (r) { if (!r.ok && r.error === 'busy' && !retried) throw r; return r; })
+      .catch(function (e) { if (retried || (e && e.error && e.error !== 'busy')) throw e; return new Promise(function (ok) { setTimeout(ok, 2000); }).then(function () { return post(body, true); }); });
   };
 
   /* ---- readiness check ---- */
