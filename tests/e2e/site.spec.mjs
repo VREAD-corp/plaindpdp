@@ -125,10 +125,10 @@ test('anonymous tracking increments the daily counters', async ({ page }) => {
   test.skip(!LIVE || !key, 'live only');
   const views = (s) => Object.entries(s.stats).filter(([k]) => / view( |$)/.test(k)).reduce((a, [, n]) => a + n, 0);
   const completes = (s) => Object.entries(s.stats).filter(([k]) => / check_complete( |$)/.test(k)).reduce((a, [, n]) => a + n, 0);
-  const before = await api({ action: 'summary', key });
+  const before = await api({ action: 'summary', key, includeTests: true });
   await page.goto('check.html?p=a&utm_source=e2e-test&utm_medium=test');
   for (const q of QUESTIONS) await page.locator(`#q-${q.id} input[value="yes"]`).check();
   await page.getByRole('button', { name: 'See my score and gap list' }).click();
   await expect(page.locator('#score-num')).toHaveText('100');
-  await expect.poll(async () => { const a = await api({ action: 'summary', key }); return [views(a) > views(before), completes(a) > completes(before)]; }, { timeout: 90_000, intervals: [3000] }).toEqual([true, true]);
+  await expect.poll(async () => { const a = await api({ action: 'summary', key, includeTests: true }); return [views(a) > views(before), completes(a) > completes(before)]; }, { timeout: 90_000, intervals: [3000] }).toEqual([true, true]);
 });

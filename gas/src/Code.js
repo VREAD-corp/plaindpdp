@@ -285,6 +285,7 @@ function summary_(req) {
   });
   var st = tab_('Stats', STATS_HEADER);
   if (st.getLastRow() >= 2) st.getRange(2, 1, st.getLastRow() - 1, STATS_HEADER.length).getValues().forEach(function (r) {
+    if (!req.includeTests && String(r[5]) === 'e2e-test') return; // automated test traffic (utm_source=e2e-test)
     var k = cell_(r[0]) + ' ' + r[3] + (r[4] ? ' ' + r[4] : '');
     out.stats[k] = (out.stats[k] || 0) + Number(r[8] || 0);
   });
