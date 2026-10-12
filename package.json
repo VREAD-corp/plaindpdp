@@ -1,0 +1,15 @@
+{
+  "name": "plaindpdp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PlainDPDP: free DPDP Act 2023 readiness check and privacy-notice generator for Indian SMEs (READ FRANCE SAS).",
+  "license": "UNLICENSED",
+  "author": "READ FRANCE SAS",
+  "scripts": {
+    "build": "node site/build.mjs",
+    "test": "node --test tests/unit/*.test.mjs",
+    "serve": "node site/serve.mjs 4810",
+    "e2e": "playwright test"
+  },
+  "devDependencies": { "@playwright/test": "1.62.1" }
+}

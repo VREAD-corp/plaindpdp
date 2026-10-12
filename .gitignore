@@ -1,0 +1,6 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+gas/.clasp.json
+gas/.deployment.json
