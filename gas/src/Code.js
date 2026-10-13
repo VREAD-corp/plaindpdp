@@ -2,7 +2,9 @@
  * PlainDPDP web app (READ FRANCE SAS). Standalone Apps Script, separate from octave-checkout.
  *
  * Actions (POST text/plain JSON, or GET with the same fields as query parameters):
- *   track     cookieless, anonymous counters (Stats tab), same pattern as octave-checkout Track.js
+ *   track     cookieless, anonymous counters (Stats tab), same pattern as octave-checkout Track.js.
+ *             Hits flagged `excluded` by mesure.js (crawler or headless user agent, navigator.webdriver,
+ *             our own tests with octave_notrack=1) go to the Exclus tab by reason instead.
  *   preorder  early-access sign-up with DPDP-style consent (Signups tab)
  *   rights    data-principal request: withdraw | erase | access | correct | grievance (Requests tab)
  *   ping      health check
@@ -32,6 +34,9 @@ var SIGNUP_HEADER = ['created_at', 'updated_at', 'email', 'name', 'business', 'b
 var REQUEST_HEADER = ['created_at', 'type', 'email_sha256', 'message', 'matched_rows', 'status', 'test'];
 var STATS_HEADER = ['date', 'site', 'page', 'event', 'variant', 'source', 'medium', 'campaign', 'count', 'mobile', 'desktop', 'updated_at'];
 var STATS_KEYS = 8;
+var EXCL_HEADER = ['date', 'site', 'page', 'event', 'variant', 'reason', 'count', 'mobile', 'desktop', 'updated_at'];
+var EXCL_KEYS = 6;
+var EXCL_REASONS = ['webdriver', 'bot', 'notrack']; // decided in the browser; the user agent is never sent
 
 function doGet(e) { return handle_(e, (e && e.parameter) || {}); }
 
@@ -152,6 +157,7 @@ function validateTrack_(req) {
     source: token_(req.utm_source, 50) || ref || '(direct)',
     medium: token_(req.utm_medium, 30), campaign: token_(req.utm_campaign, 50),
     device: req.device === 'mobile' || req.device === 'desktop' ? req.device : '',
+    reason: !req.excluded ? '' : EXCL_REASONS.indexOf(String(req.excluded)) >= 0 ? String(req.excluded) : 'bot',
   };
 }
 
@@ -164,13 +170,20 @@ function track_(req) {
 }
 
 function incrementStat_(h) {
-  var sh = tab_('Stats', STATS_HEADER);
-  var key = [h.date, h.site, h.page, h.event, h.variant, h.source, h.medium, h.campaign].join('\u001f');
+  if (h.reason) return incrementRow_('Exclus', EXCL_HEADER, EXCL_KEYS, [h.date, h.site, h.page, h.event, h.variant, h.reason], h.device);
+  return incrementRow_('Stats', STATS_HEADER, STATS_KEYS, [h.date, h.site, h.page, h.event, h.variant, h.source, h.medium, h.campaign], h.device);
+}
+
+/** Caller holds the lock. Daily counter row `keys` (date first) in tab `name`: incremented, or appended. */
+function incrementRow_(name, header, nKeys, keys, device) {
+  var sh = tab_(name, header);
+  var key = keys.join('\u001f');
+  var h = { date: keys[0], device: device };
   var last = sh.getLastRow();
   var rowNum = 0;
   var n = Math.min(Math.max(last - 1, 0), 3000);
   if (n > 0) {
-    var vals = sh.getRange(last - n + 1, 1, n, STATS_KEYS).getValues();
+    var vals = sh.getRange(last - n + 1, 1, n, nKeys).getValues();
     for (var i = vals.length - 1; i >= 0; i--) {
       if (cell_(vals[i][0]) < h.date) break;
       if (vals[i].map(cell_).join('\u001f') === key) { rowNum = last - n + 1 + i; break; }
@@ -178,10 +191,10 @@ function incrementStat_(h) {
   }
   var stamp = now_().toISOString();
   if (!rowNum) {
-    sh.appendRow([txt_(h.date), h.site, txt_(h.page), h.event, h.variant, txt_(h.source), txt_(h.medium), txt_(h.campaign), 1, h.device === 'mobile' ? 1 : 0, h.device === 'desktop' ? 1 : 0, stamp]);
+    sh.appendRow(keys.map(txt_).concat([1, h.device === 'mobile' ? 1 : 0, h.device === 'desktop' ? 1 : 0, stamp]));
   } else {
-    var c = sh.getRange(rowNum, STATS_KEYS + 1, 1, 3).getValues()[0];
-    sh.getRange(rowNum, STATS_KEYS + 1, 1, 4).setValues([[Number(c[0] || 0) + 1, Number(c[1] || 0) + (h.device === 'mobile' ? 1 : 0), Number(c[2] || 0) + (h.device === 'desktop' ? 1 : 0), stamp]]);
+    var c = sh.getRange(rowNum, nKeys + 1, 1, 3).getValues()[0];
+    sh.getRange(rowNum, nKeys + 1, 1, 4).setValues([[Number(c[0] || 0) + 1, Number(c[1] || 0) + (h.device === 'mobile' ? 1 : 0), Number(c[2] || 0) + (h.device === 'desktop' ? 1 : 0), stamp]]);
   }
 }
 
@@ -266,7 +279,8 @@ function rights_(req) {
 
 function summary_(req) {
   checkAdmin_(req);
-  var out = { ok: true, sheetUrl: ss_().getUrl(), signups: { real: 0, test: 0, active: 0, byOffer: {}, byVariant: {} }, requests: { real: 0, test: 0, open: 0 }, stats: {} };
+  var out = { ok: true, sheetUrl: ss_().getUrl(), signups: { real: 0, test: 0, active: 0, byOffer: {}, byVariant: {} }, requests: { real: 0, test: 0, open: 0 }, stats: {}, excluded: {}, views: {} };
+  var day = function (d) { return out.views[d] || (out.views[d] = { counted: 0, excluded: 0, raw: 0 }); };
   var su = tab_('Signups', SIGNUP_HEADER);
   if (su.getLastRow() >= 2) su.getRange(2, 1, su.getLastRow() - 1, SIGNUP_HEADER.length).getValues().forEach(function (r) {
     var test = r[14] === 'yes';
@@ -288,6 +302,14 @@ function summary_(req) {
     if (!req.includeTests && String(r[5]) === 'e2e-test') return; // automated test traffic (utm_source=e2e-test)
     var k = cell_(r[0]) + ' ' + r[3] + (r[4] ? ' ' + r[4] : '');
     out.stats[k] = (out.stats[k] || 0) + Number(r[8] || 0);
+    if (r[3] === 'view') { day(cell_(r[0])).counted += Number(r[8] || 0); day(cell_(r[0])).raw += Number(r[8] || 0); }
+  });
+  // Hits that are not visits (crawlers, automated browsers, our tests): "date event[ variant]|reason".
+  var ex = tab_('Exclus', EXCL_HEADER);
+  if (ex.getLastRow() >= 2) ex.getRange(2, 1, ex.getLastRow() - 1, EXCL_HEADER.length).getValues().forEach(function (r) {
+    var k = cell_(r[0]) + ' ' + r[3] + (r[4] ? ' ' + r[4] : '') + '|' + r[5];
+    out.excluded[k] = (out.excluded[k] || 0) + Number(r[6] || 0);
+    if (r[3] === 'view') { day(cell_(r[0])).excluded += Number(r[6] || 0); day(cell_(r[0])).raw += Number(r[6] || 0); }
   });
   if (req.email) out.hasEmail = su.getLastRow() >= 2 && su.getRange(2, 3, su.getLastRow() - 1, 1).getValues().some(function (r) { return String(r[0]) === String(req.email).toLowerCase(); });
   return out;

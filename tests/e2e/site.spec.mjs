@@ -9,6 +9,8 @@ const LIVE = !!process.env.BASE_URL;
 const SHOTS = process.env.SHOTS_DIR;
 const key = (() => { try { return /PLAINDPDP_ADMIN_KEY=(\S+)/.exec(fs.readFileSync(os.homedir() + '/.config/octave/plaindpdp.env', 'utf8'))[1]; } catch { return process.env.PLAINDPDP_ADMIN_KEY; } })();
 const api = async (body) => (await fetch(SITE.endpoint, { method: 'POST', body: JSON.stringify(body), redirect: 'follow' })).json();
+// Our runs never count as visits: octave_notrack=1 sends their hits to the excluded counters (reason notrack).
+test.beforeEach(async ({ page }) => { await page.addInitScript(() => localStorage.setItem('octave_notrack', '1')); });
 const shot = async (page, name, info) => { if (SHOTS) await page.screenshot({ path: `${SHOTS}/${name}-${info.project.name}.png`, fullPage: true }); };
 
 test('no horizontal scroll and no console errors on every page', async ({ page }, info) => {
@@ -121,14 +123,17 @@ test('early-access form: consent required, then the row reaches the Sheet, then 
   expect(s.hasEmail).toBe(false);
 });
 
-test('anonymous tracking increments the daily counters', async ({ page }) => {
+test('anonymous tracking: our test hits reach the excluded counters, not the visits', async ({ page }) => {
   test.skip(!LIVE || !key, 'live only');
-  const views = (s) => Object.entries(s.stats).filter(([k]) => / view( |$)/.test(k)).reduce((a, [, n]) => a + n, 0);
-  const completes = (s) => Object.entries(s.stats).filter(([k]) => / check_complete( |$)/.test(k)).reduce((a, [, n]) => a + n, 0);
+  const sum = (s, re) => Object.entries(s.excluded || {}).filter(([k]) => re.test(k)).reduce((a, [, n]) => a + n, 0);
+  const views = (s) => sum(s, / view( [ab])?\|notrack$/);
+  const completes = (s) => sum(s, / check_complete( [ab])?\|notrack$/);
+  const counted = (s) => Object.entries(s.stats).filter(([k]) => / check_complete( |$)/.test(k)).reduce((a, [, n]) => a + n, 0);
   const before = await api({ action: 'summary', key, includeTests: true });
   await page.goto('check.html?p=a&utm_source=e2e-test&utm_medium=test');
   for (const q of QUESTIONS) await page.locator(`#q-${q.id} input[value="yes"]`).check();
   await page.getByRole('button', { name: 'See my score and gap list' }).click();
   await expect(page.locator('#score-num')).toHaveText('100');
   await expect.poll(async () => { const a = await api({ action: 'summary', key, includeTests: true }); return [views(a) > views(before), completes(a) > completes(before)]; }, { timeout: 90_000, intervals: [3000] }).toEqual([true, true]);
+  expect(counted(await api({ action: 'summary', key, includeTests: true })), 'test hits must not count as visits').toBe(counted(before));
 });
