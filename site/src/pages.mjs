@@ -35,7 +35,7 @@ ${alt ? `<link rel="alternate" hreflang="${lang}" href="${canonical}">\n<link re
 <link rel="stylesheet" href="${R}assets/style.css">
 <script src="${R}assets/core.js" defer></script>
 <script src="${R}assets/app.js" defer></script>
-<script src="${R}assets/mesure.js" defer></script>
+<script src="${R}assets/mesure.js?v=2" defer></script>
 </head>
 <body data-page="${page}">
 <a class="skip" href="#main">${u.skip}</a>

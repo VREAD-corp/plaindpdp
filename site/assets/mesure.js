@@ -7,7 +7,7 @@ try{s=localStorage;if(q.has('octave_notrack'))q.get('octave_notrack')=='1'?s.set
 if(!x&&q.get('octave_notrack')=='1')x='notrack';
 if(!x&&n.webdriver)x='webdriver';
 if(!x&&/bot\b|crawl|spider|slurp|headless|lighthouse|pagespeed|inspectiontool|googleother|mediapartners|bingpreview|phantom|puppeteer|playwright|selenium/i.test(n.userAgent||''))x='bot';
-b={site:'plaindpdp',page:l.pathname,ref_domain:d.referrer.split('/')[2],device:innerWidth<768?'mobile':'desktop',variant:window.pdVariant||''};
+b={site:'plaindpdp',v:2,page:l.pathname,ref_domain:d.referrer.split('/')[2],device:innerWidth<768?'mobile':'desktop',variant:window.pdVariant||''};
 if(x)b.excluded=x;
 for(let g of['source','medium','campaign'])b['utm_'+g]=q.get('utm_'+g);
 t=v=>{b.event=v;b.ts=Date.now();try{fetch('https://script.google.com/macros/s/AKfycbxtPsxjdWpguJKKJ5nPN0K1NZSUCmMKpjmrkhM49wNv-0ySFsfq6aHNN2bt3puvlk1nhQ/exec?action=track',{method:'POST',keepalive:!0,credentials:'omit',redirect:'manual',body:JSON.stringify(b)}).catch(e=>0)}catch{}};

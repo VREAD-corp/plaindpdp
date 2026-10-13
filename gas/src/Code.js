@@ -36,7 +36,9 @@ var STATS_HEADER = ['date', 'site', 'page', 'event', 'variant', 'source', 'mediu
 var STATS_KEYS = 8;
 var EXCL_HEADER = ['date', 'site', 'page', 'event', 'variant', 'reason', 'count', 'mobile', 'desktop', 'updated_at'];
 var EXCL_KEYS = 6;
-var EXCL_REASONS = ['webdriver', 'bot', 'notrack']; // decided in the browser; the user agent is never sent
+// Decided in the browser (the user agent is never sent); 'legacy' = a hit without v, i.e. from a cached pre-filter
+// mesure.js, which search-engine renderers keep using.
+var EXCL_REASONS = ['webdriver', 'bot', 'notrack', 'legacy'];
 
 function doGet(e) { return handle_(e, (e && e.parameter) || {}); }
 
@@ -157,7 +159,7 @@ function validateTrack_(req) {
     source: token_(req.utm_source, 50) || ref || '(direct)',
     medium: token_(req.utm_medium, 30), campaign: token_(req.utm_campaign, 50),
     device: req.device === 'mobile' || req.device === 'desktop' ? req.device : '',
-    reason: !req.excluded ? '' : EXCL_REASONS.indexOf(String(req.excluded)) >= 0 ? String(req.excluded) : 'bot',
+    reason: !req.v ? 'legacy' : !req.excluded ? '' : EXCL_REASONS.indexOf(String(req.excluded)) >= 0 ? String(req.excluded) : 'bot',
   };
 }
 
