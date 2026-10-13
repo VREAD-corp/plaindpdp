@@ -33,6 +33,8 @@ ${alt ? `<link rel="alternate" hreflang="${lang}" href="${canonical}">\n<link re
 <meta property="og:locale" content="${lang === 'hi' ? 'hi_IN' : 'en_IN'}">
 <link rel="icon" href="${R}assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="${R}assets/style.css">
+<script src="${R}assets/xp.js" defer></script>
+<script src="${R}assets/cro.js" defer data-site="plaindpdp" data-api="${SITE.endpoint}" data-hosts="outils.vread.fr" data-cta="[data-mesure=cta_click],#preorder [type=submit]"></script>
 <script src="${R}assets/core.js" defer></script>
 <script src="${R}assets/app.js" defer></script>
 <script src="${R}assets/mesure.js?v=2" defer></script>
@@ -86,7 +88,7 @@ const EN = {};
 EN.index = () => ({
   title: 'PlainDPDP: DPDP Act readiness check and privacy notice generator for Indian SMEs',
   desc: 'Free 15-question DPDP readiness check with a scored gap list, and a free DPDP privacy-notice generator in English and Hindi. Full template kit ₹4,999 in early access. Not legal advice.',
-  body: `<section class="hero"><div class="wrap hero-in">
+  body: `<section class="hero" id="hero"><div class="wrap hero-in">
 <div class="hero-copy">
 <p class="kicker">India · Digital Personal Data Protection Act, 2023</p>
 <h1>DPDP compliance templates for Indian small businesses</h1>
@@ -110,7 +112,7 @@ ${sampleNotice('en')}
 <p class="small">Our reading of notification G.S.R. 843(E) and rule 1 of the Rules ("eighteen months after the date of publication"). The Gazette is dated 13 November 2025 but was signed on 14 November 2025, so some advisers count from the 14th; plan for 13 May 2027. Until that date, section 43A of the IT Act 2000 and the SPDI Rules 2011 still apply (section 44(2) removes them on 13 May 2027). We have not found any later amendment to these dates, but check the sources below before relying on them.</p>
 </section>
 
-<section class="wrap split">
+<section class="wrap split" id="audience">
 <div>
 <h2>Who this is for</h2>
 <p>Shops and D2C brands with a website or WhatsApp catalogue, clinics, coaching centres and schools, small software firms, agencies and CA practices that keep client data. If you collect names and phone numbers in a Google Sheet, the Act applies to you.</p>
@@ -148,19 +150,19 @@ ${SRC('en')}`,
 EN.check = () => ({
   title: 'DPDP readiness check: 15 questions, a score and your gap list | PlainDPDP',
   desc: 'Free DPDP Act 2023 readiness check for Indian small businesses: 15 questions mapped to sections and rules, a score out of 100 and a prioritised gap list. Answers stay in your browser.',
-  body: `<section class="wrap narrow">
+  body: `<section class="wrap narrow" data-section="check-tool">
 <h1>DPDP readiness check</h1>
 <p class="lead">15 questions, about 5 minutes. Each one is tied to a section of the DPDP Act 2023 or a rule of the DPDP Rules 2025. At the end you get a score out of 100 and your gaps, most important first.</p>
 <p class="small">Answer for your business as it works today. "Partly" means you do it for some customers or some channels only.</p>
 ${checkForm('en')}
-<aside class="next" id="next"><h2>After the check</h2><p>Gap on the notice? <a href="notice.html" data-mesure="cta_click">Generate a draft notice for free</a>. Need the register, playbook and clauses? <a href="kit.html" data-mesure="cta_click">See the full kit (${inr(P.pack)})</a>.</p></aside>
+<aside class="next" id="next" data-section="next"><h2>After the check</h2><p>Gap on the notice? <a href="notice.html" data-mesure="cta_click">Generate a draft notice for free</a>. Need the register, playbook and clauses? <a href="kit.html" data-mesure="cta_click">See the full kit (${inr(P.pack)})</a>.</p></aside>
 </section>`,
 });
 
 EN.notice = () => ({
   title: 'Free DPDP privacy notice generator (English and Hindi) | PlainDPDP',
   desc: 'Generate a DPDP Act 2023 privacy notice with the items of Rule 3: data items, purposes, withdrawal of consent, rights, grievance contact, Consent Manager and the Data Protection Board. English or Hindi.',
-  body: `<section class="wrap narrow">
+  body: `<section class="wrap narrow" data-section="generator">
 <h1>DPDP privacy notice generator</h1>
 <p class="lead">Fill in what your business collects and why. You get a notice with the items that section 5 and Rule 3 require: an itemised list of data and purposes, how to withdraw consent, how to use your rights, who handles grievances, and how to complain to the Data Protection Board. In English or Hindi. Nothing you type leaves your browser.</p>
 ${generatorForm('en')}
@@ -170,7 +172,7 @@ ${generatorForm('en')}
 EN.kit = () => ({
   title: `DPDP compliance kit for SMEs: ${inr(P.pack)}, early access | PlainDPDP`,
   desc: `The PlainDPDP kit: notice templates in 22 Indian languages, consent register, breach playbook, processor clause, children's data checklist and retention schedule. ${inr(P.pack)} one-off. Early access, no payment today.`,
-  body: `<section class="wrap narrow">
+  body: `<section class="wrap narrow" data-section="pricing">
 <h1>The PlainDPDP kit</h1>
 <p class="lead">Templates to close the gaps the readiness check finds, for businesses that cannot pay a law firm ₹1 lakh or more for a DPDP project. The kit is <strong>not on sale yet</strong>: join early access and we will e-mail you when it is ready, at the price below.</p>
 <div class="table-wrap"><table class="kit-table">
@@ -192,15 +194,19 @@ ${preorderForm('en')}
 
 EN.privacy = () => ({
   title: 'Privacy notice of PlainDPDP (READ FRANCE SAS)',
-  desc: 'How READ FRANCE SAS handles personal data on PlainDPDP: anonymous visit counts without cookies, the early-access list, your rights under the DPDP Act and the GDPR.',
-  body: `<section class="wrap narrow prose">
+  desc: 'How READ FRANCE SAS handles personal data on PlainDPDP: anonymous visit and behaviour counts without cookies, A/B tests, the early-access list, your rights under the DPDP Act and the GDPR.',
+  body: `<section class="wrap narrow prose" data-section="privacy">
 <h1>Privacy notice</h1>
 <p class="small">Version of ${SITE.updated}. Also in <a href="hi/privacy.html">Hindi</a>.</p>
 <p>${SITE.company.name}, ${SITE.company.address} (SIREN ${SITE.company.siren}), runs this site. For the early-access list we are the Data Fiduciary under India's DPDP Act 2023 and the controller under the EU GDPR. Questions, requests and grievances: <a href="mailto:${SITE.email}">${SITE.email}</a>. We reply within 30 days.</p>
 <h2>1. The free tools</h2>
-<p>The readiness check and the notice generator run entirely in your browser. Your answers and the details you type are not sent to us or stored by us.</p>
-<h2>2. Anonymous visit counts</h2>
-<p>We count visits without cookies and without any identifier. Each page sends: the page path, the event (for example "check completed"), the referring website's domain, campaign tags in the link (utm_source, utm_medium, utm_campaign), the price variant shown (a or b) and whether the screen is narrower than 768 pixels. We do not send or keep your IP address, browser details or any ID, and we add the hits into daily totals. If your browser sends "Do Not Track" or "Global Privacy Control", nothing is sent. Search-engine crawlers and automated browsers (recognised inside your browser, without sending its details) are counted separately, and a prerendered page is counted only if you open it. Because these counts cannot identify anyone, they are not personal data.</p>
+<p>The readiness check and the notice generator run entirely in your browser. Your answers and the details you type are not sent to us or stored by us (we only count, without any content, that a form was started or submitted: see section 2).</p>
+<h2>2. Anonymous visit and behaviour counts</h2>
+<p>We count visits without cookies and without any identifier. Each page sends: the page path, the event (for example "check completed"), the referring website's domain, campaign tags in the link (utm_source, utm_medium, utm_campaign), the price variant shown (a or b) and whether the screen is narrower than 768 pixels.</p>
+<p>To improve the site, each page also sends, once, a short list of what happened on it: how far the page was scrolled, which sections were reached, the time before the first click on a main button (in bands such as "under 10 seconds"), whether a form was started or submitted and the name of the last field touched (for example "bizName", never what you typed in it), which collapsible items were opened, the domain of links to other websites, technical errors (as an anonymous fingerprint of the error message), page speed (Core Web Vitals, as good, needs improvement or poor) and repeated clicks on the same element.</p>
+<p>We do not send or keep your IP address, browser details, any cookie or any ID, and we only keep daily totals per page; we cannot follow you from page to page or from one day to the next. There is no tracking across other websites, and nothing is combined with other data, shared or sold: the totals serve only this site's own statistics. If your browser sends "Do Not Track" or "Global Privacy Control", nothing at all is sent. Search-engine crawlers and automated browsers (recognised inside your browser, without sending its details) are counted separately or not at all, and a prerendered page is counted only if you open it. Because these counts cannot identify anyone, they are not personal data under the DPDP Act or the GDPR.</p>
+<p><strong>A/B tests.</strong> Some visitors see a different version of a headline, a button or a price (today: the Pro plan shown at ₹999 or ₹2,999 per month). The version letter is kept in your browser tab's sessionStorage, which the browser deletes when you close the tab, or chosen by date, without storing anything; it is never linked to you. We count each version's visits and sign-ups only as totals. If you join early access, the price recorded is the one you were shown, and the price you would pay is always the one displayed.</p>
+<p class="small">Section updated on 13 October 2026.</p>
 <h2>3. The early-access list</h2>
 <ul>
 <li><strong>Data:</strong> your e-mail address and, if you give them, your name, business name, business type, the option you chose and the languages you need.</li>
@@ -222,7 +228,7 @@ ${rightsForm('en')}
 EN.terms = () => ({
   title: 'Terms of use of PlainDPDP',
   desc: 'Terms of use of PlainDPDP, a self-help DPDP template kit by READ FRANCE SAS. Not legal advice.',
-  body: `<section class="wrap narrow prose">
+  body: `<section class="wrap narrow prose" data-section="terms">
 <h1>Terms of use</h1>
 <p class="small">Version of ${SITE.updated}.</p>
 <h2>1. Who we are</h2>
@@ -248,7 +254,7 @@ const hiNote = '<p class="mt-note">यह पेज मशीन की सह�
 HI.index = () => ({
   title: 'PlainDPDP: छोटे व्यवसायों के लिए DPDP तैयारी जाँच और गोपनीयता सूचना जनरेटर',
   desc: 'भारतीय छोटे व्यवसायों के लिए मुफ़्त 15-प्रश्न DPDP तैयारी जाँच, स्कोर और कमियों की सूची, और हिंदी व अंग्रेज़ी में मुफ़्त गोपनीयता सूचना जनरेटर। पूरा किट ₹4,999, अर्ली एक्सेस में। कानूनी सलाह नहीं।',
-  body: `<section class="hero"><div class="wrap hero-in">
+  body: `<section class="hero" id="hero"><div class="wrap hero-in">
 <div class="hero-copy">
 ${hiNote}
 <p class="kicker">भारत · डिजिटल व्यक्तिगत डेटा संरक्षण अधिनियम, 2023</p>
@@ -271,7 +277,7 @@ ${sampleNotice('hi')}
 </tbody></table></div>
 <p class="small">अधिसूचना G.S.R. 843(E) और नियमों के नियम 1 ("राजपत्र में प्रकाशन की तारीख़ से अठारह महीने बाद") की हमारी समझ। राजपत्र पर 13 नवंबर 2025 की तारीख़ है पर हस्ताक्षर 14 नवंबर 2025 को हुए, इसलिए कुछ सलाहकार 14 से गिनते हैं; 13 मई 2027 के हिसाब से योजना बनाएँ। उस तारीख़ तक IT अधिनियम 2000 की धारा 43A और SPDI नियम 2011 लागू रहते हैं। स्रोत पेज के नीचे हैं।</p>
 </section>
-<section class="wrap split">
+<section class="wrap split" id="audience">
 <div><h2>यह किसके लिए है</h2>
 <p>वेबसाइट या WhatsApp कैटलॉग वाली दुकानें और D2C ब्रांड, क्लिनिक, कोचिंग सेंटर और स्कूल, छोटी सॉफ़्टवेयर कंपनियाँ, एजेंसियाँ और ग्राहकों का डेटा रखने वाली CA प्रैक्टिस। यदि आप Google Sheet में नाम और फ़ोन नंबर रखते हैं, तो अधिनियम आप पर लागू होता है।</p>
 <p>अधिनियम की अनुसूची में जुर्माना उचित सुरक्षा उपाय न करने पर ₹250 करोड़ तक, ब्रीच की सूचना न देने या बच्चों के डेटा के दायित्व तोड़ने पर ₹200 करोड़ तक, और अन्य उल्लंघनों (जैसे सूचना न होना या अमान्य सहमति) पर ₹50 करोड़ तक है। बोर्ड जाँच के बाद ही जुर्माना लगाता है और राशि उल्लंघन व व्यवसाय की प्रकृति देखकर तय करता है (धारा 33)।</p></div>
@@ -284,7 +290,7 @@ ${sampleNotice('hi')}
 <p>मुफ़्त टूल आपकी कमियाँ ढूँढते हैं और एक सूचना लिखते हैं। किट बाकी कमियाँ दूर करने के दस्तावेज़ देता है: 22 भाषाओं में सूचना टेम्पलेट, सहमति रिकॉर्ड रजिस्टर, ब्रीच-रिस्पॉन्स प्लेबुक, डेटा-प्रोसेसर अनुबंध खंड, बच्चों के डेटा की चेकलिस्ट और रिटेंशन शेड्यूल।</p>
 <p><a class="btn" href="kit.html" data-mesure="cta_click">किट देखें और अर्ली एक्सेस से जुड़ें</a> <span class="small">कीमत: <span data-price-pack>${inr(P.pack)}</span> एक बार, या प्रो <span data-price-pro data-a="${inr(P.a)}" data-b="${inr(P.b)}">${inr(P.a)}</span> प्रति माह। आज कोई भुगतान नहीं।</span></p>
 </section>
-<section class="wrap"><h2>यह साइट कैसे बनी</h2>
+<section class="wrap" id="how"><h2>यह साइट कैसे बनी</h2>
 <p>पेरिस की एक छोटी सॉफ़्टवेयर कंपनी READ FRANCE SAS के AI एजेंट Octave ने इलेक्ट्रॉनिकी और सूचना प्रौद्योगिकी मंत्रालय द्वारा प्रकाशित अधिनियम और नियम पढ़े और हर प्रश्न व जनरेटर की हर पंक्ति किसी धारा या नियम के आधार पर लिखी। किसी वकील ने इस साइट की समीक्षा नहीं की है। गलती मिले तो <a href="mailto:${SITE.email}">${SITE.email}</a> पर लिखें।</p></section>
 ${SRC('hi')}`,
 });
@@ -292,20 +298,20 @@ ${SRC('hi')}`,
 HI.check = () => ({
   title: 'DPDP तैयारी जाँच: 15 प्रश्न, स्कोर और कमियों की सूची | PlainDPDP',
   desc: 'भारतीय छोटे व्यवसायों के लिए मुफ़्त DPDP अधिनियम 2023 तैयारी जाँच: धाराओं और नियमों से जुड़े 15 प्रश्न, 100 में से स्कोर और प्राथमिकता वाली कमियों की सूची।',
-  body: `<section class="wrap narrow">
+  body: `<section class="wrap narrow" data-section="check-tool">
 ${hiNote}
 <h1>DPDP तैयारी जाँच</h1>
 <p class="lead">15 प्रश्न, लगभग 5 मिनट। हर प्रश्न DPDP अधिनियम 2023 की किसी धारा या DPDP नियम 2025 के किसी नियम से जुड़ा है। अंत में आपको 100 में से स्कोर और आपकी कमियाँ मिलेंगी, सबसे ज़रूरी पहले।</p>
 <p class="small">अपने व्यवसाय के आज के काम के हिसाब से उत्तर दें। "आंशिक" का अर्थ है कि आप यह केवल कुछ ग्राहकों या कुछ माध्यमों के लिए करते हैं।</p>
 ${checkForm('hi')}
-<aside class="next" id="next"><h2>जाँच के बाद</h2><p>सूचना में कमी? <a href="notice.html" data-mesure="cta_click">मुफ़्त ड्राफ़्ट सूचना बनाएँ</a>। रजिस्टर, प्लेबुक और खंड चाहिए? <a href="kit.html" data-mesure="cta_click">पूरा किट देखें (${inr(P.pack)})</a>।</p></aside>
+<aside class="next" id="next" data-section="next"><h2>जाँच के बाद</h2><p>सूचना में कमी? <a href="notice.html" data-mesure="cta_click">मुफ़्त ड्राफ़्ट सूचना बनाएँ</a>। रजिस्टर, प्लेबुक और खंड चाहिए? <a href="kit.html" data-mesure="cta_click">पूरा किट देखें (${inr(P.pack)})</a>।</p></aside>
 </section>`,
 });
 
 HI.notice = () => ({
   title: 'मुफ़्त DPDP गोपनीयता सूचना जनरेटर (हिंदी और अंग्रेज़ी) | PlainDPDP',
   desc: 'नियम 3 के बिंदुओं के साथ DPDP अधिनियम 2023 की गोपनीयता सूचना बनाएँ: डेटा, उद्देश्य, सहमति वापसी, अधिकार, शिकायत संपर्क, सहमति प्रबंधक और डेटा संरक्षण बोर्ड।',
-  body: `<section class="wrap narrow">
+  body: `<section class="wrap narrow" data-section="generator">
 ${hiNote}
 <h1>DPDP गोपनीयता सूचना जनरेटर</h1>
 <p class="lead">भरिए कि आपका व्यवसाय कौन-सा डेटा लेता है और क्यों। आपको धारा 5 और नियम 3 के बिंदुओं वाली सूचना मिलेगी: डेटा और उद्देश्यों की अलग-अलग सूची, सहमति वापस लेने का तरीका, अधिकारों का उपयोग, शिकायत कौन देखेगा, और डेटा संरक्षण बोर्ड से शिकायत कैसे करें। हिंदी या अंग्रेज़ी में। आपकी भरी जानकारी आपके ब्राउज़र से बाहर नहीं जाती।</p>
@@ -316,7 +322,7 @@ ${generatorForm('hi')}
 HI.kit = () => ({
   title: `छोटे व्यवसायों के लिए DPDP अनुपालन किट: ${inr(P.pack)}, अर्ली एक्सेस | PlainDPDP`,
   desc: `PlainDPDP किट: 22 भारतीय भाषाओं में सूचना टेम्पलेट, सहमति रजिस्टर, ब्रीच प्लेबुक, प्रोसेसर खंड, बच्चों के डेटा की चेकलिस्ट और रिटेंशन शेड्यूल। ${inr(P.pack)} एक बार। आज कोई भुगतान नहीं।`,
-  body: `<section class="wrap narrow">
+  body: `<section class="wrap narrow" data-section="pricing">
 ${hiNote}
 <h1>PlainDPDP किट</h1>
 <p class="lead">तैयारी जाँच में मिली कमियों को दूर करने के टेम्पलेट, उन व्यवसायों के लिए जो DPDP प्रोजेक्ट के लिए लॉ फ़र्म को ₹1 लाख या उससे अधिक नहीं दे सकते। किट <strong>अभी बिक्री पर नहीं है</strong>: अर्ली एक्सेस से जुड़ें, किट तैयार होने पर हम नीचे दी गई कीमत पर आपको ई-मेल करेंगे।</p>
@@ -339,13 +345,17 @@ ${preorderForm('hi')}
 HI.privacy = () => ({
   title: 'PlainDPDP (READ FRANCE SAS) की गोपनीयता सूचना',
   desc: 'READ FRANCE SAS PlainDPDP पर व्यक्तिगत डेटा कैसे संभालता है: बिना कुकी के गुमनाम गिनती, अर्ली-एक्सेस सूची, DPDP अधिनियम और GDPR के तहत आपके अधिकार।',
-  body: `<section class="wrap narrow prose">
+  body: `<section class="wrap narrow prose" data-section="privacy">
 ${hiNote}
 <h1>गोपनीयता सूचना</h1>
 <p class="small">13 अक्टूबर 2026 का संस्करण। <a href="../privacy.html">अंग्रेज़ी</a> में भी।</p>
 <p>${SITE.company.name}, ${SITE.company.address} (SIREN ${SITE.company.siren}) यह साइट चलाता है। अर्ली-एक्सेस सूची के लिए हम भारत के DPDP अधिनियम 2023 के तहत डेटा फ़िड्युशरी और EU GDPR के तहत कंट्रोलर हैं। प्रश्न, अनुरोध और शिकायतें: <a href="mailto:${SITE.email}">${SITE.email}</a>। हम 30 दिनों के भीतर उत्तर देते हैं।</p>
-<h2>1. मुफ़्त टूल</h2><p>तैयारी जाँच और सूचना जनरेटर पूरी तरह आपके ब्राउज़र में चलते हैं। आपके उत्तर और भरी गई जानकारी हमें नहीं भेजी जाती और हम उसे स्टोर नहीं करते।</p>
-<h2>2. गुमनाम गिनती</h2><p>हम बिना कुकी और बिना किसी पहचानकर्ता के विज़िट गिनते हैं। हर पेज भेजता है: पेज का पाथ, घटना (जैसे "जाँच पूरी हुई"), रेफ़र करने वाली वेबसाइट का डोमेन, लिंक के कैंपेन टैग, दिखाया गया कीमत संस्करण (a या b) और क्या स्क्रीन 768 पिक्सेल से संकरी है। हम आपका IP पता, ब्राउज़र विवरण या कोई ID न भेजते हैं न रखते हैं, और गिनती को दैनिक कुल में जोड़ते हैं। यदि आपका ब्राउज़र "Do Not Track" या "Global Privacy Control" भेजता है, तो कुछ नहीं भेजा जाता। सर्च इंजन क्रॉलर और स्वचालित ब्राउज़र (आपके ब्राउज़र में ही पहचाने जाते हैं, उनका विवरण भेजा नहीं जाता) अलग गिने जाते हैं, और पहले से लोड किया गया पेज तभी गिना जाता है जब आप उसे खोलते हैं।</p>
+<h2>1. मुफ़्त टूल</h2><p>तैयारी जाँच और सूचना जनरेटर पूरी तरह आपके ब्राउज़र में चलते हैं। आपके उत्तर और भरी गई जानकारी हमें नहीं भेजी जाती और हम उसे स्टोर नहीं करते (हम केवल, बिना किसी सामग्री के, गिनते हैं कि कोई फ़ॉर्म शुरू या जमा हुआ: भाग 2 देखें)।</p>
+<h2>2. गुमनाम विज़िट और व्यवहार गिनती</h2><p>हम बिना कुकी और बिना किसी पहचानकर्ता के विज़िट गिनते हैं। हर पेज भेजता है: पेज का पाथ, घटना (जैसे "जाँच पूरी हुई"), रेफ़र करने वाली वेबसाइट का डोमेन, लिंक के कैंपेन टैग, दिखाया गया कीमत संस्करण (a या b) और क्या स्क्रीन 768 पिक्सेल से संकरी है।</p>
+<p>साइट सुधारने के लिए हर पेज एक बार यह छोटी सूची भी भेजता है: पेज कितना स्क्रॉल हुआ, कौन-से हिस्से देखे गए, किसी मुख्य बटन पर पहले क्लिक से पहले का समय (जैसे "10 सेकंड से कम"), क्या कोई फ़ॉर्म शुरू या जमा हुआ और आख़िरी छुए गए फ़ील्ड का नाम (जैसे "bizName", उसमें लिखा गया कभी नहीं), कौन-से खुलने वाले हिस्से खोले गए, दूसरी वेबसाइटों के लिंक का डोमेन, तकनीकी त्रुटियाँ (त्रुटि संदेश का गुमनाम फ़िंगरप्रिंट), पेज की गति (Core Web Vitals: अच्छा, सुधार चाहिए या खराब) और एक ही चीज़ पर बार-बार क्लिक।</p>
+<p>हम आपका IP पता, ब्राउज़र विवरण, कोई कुकी या कोई ID न भेजते हैं न रखते हैं, और केवल हर पेज के दैनिक कुल रखते हैं; हम आपको एक पेज से दूसरे पेज या एक दिन से अगले दिन तक नहीं पहचान सकते। दूसरी वेबसाइटों पर कोई ट्रैकिंग नहीं, किसी अन्य डेटा से जोड़ना नहीं, साझा करना या बेचना नहीं: ये कुल केवल इसी साइट के अपने आँकड़ों के लिए हैं। यदि आपका ब्राउज़र "Do Not Track" या "Global Privacy Control" भेजता है, तो कुछ भी नहीं भेजा जाता। सर्च इंजन क्रॉलर और स्वचालित ब्राउज़र (आपके ब्राउज़र में ही पहचाने जाते हैं, उनका विवरण भेजा नहीं जाता) अलग गिने जाते हैं या बिल्कुल नहीं, और पहले से लोड किया गया पेज तभी गिना जाता है जब आप उसे खोलते हैं।</p>
+<p><strong>A/B परीक्षण।</strong> कुछ विज़िटर किसी शीर्षक, बटन या कीमत का अलग संस्करण देखते हैं (अभी: प्रो योजना ₹999 या ₹2,999 प्रति माह)। संस्करण का अक्षर आपके ब्राउज़र टैब के sessionStorage में रखा जाता है, जिसे टैब बंद करने पर ब्राउज़र मिटा देता है, या तारीख़ के हिसाब से चुना जाता है, बिना कुछ स्टोर किए; यह कभी आपसे नहीं जोड़ा जाता। अर्ली एक्सेस से जुड़ने पर वही कीमत दर्ज होती है जो आपको दिखाई गई, और आप जो कीमत चुकाएँगे वह हमेशा दिखाई गई कीमत ही होती है।</p>
+<p class="small">यह भाग 13 अक्टूबर 2026 को अपडेट किया गया।</p>
 <h2>3. अर्ली-एक्सेस सूची</h2>
 <ul>
 <li><strong>डेटा:</strong> आपका ई-मेल पता और, यदि आप दें, आपका नाम, व्यवसाय का नाम, व्यवसाय का प्रकार, चुना गया विकल्प और ज़रूरी भाषाएँ।</li>

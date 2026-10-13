@@ -85,13 +85,41 @@ test('notice generator: English output, .txt download and Hindi output', async (
   await expect(page.locator('#out-hi-note')).toBeVisible();
 });
 
-test('price variant b shows ₹2,999 and keeps the variant on links', async ({ page }) => {
-  await page.goto('kit.html?p=b&utm_source=e2e-test');
+test('price variant (cro.js experiment price): ?p=b forces ₹2,999, kept for the tab, prices match the variant', async ({ page }) => {
+  const cro = [];
+  page.on('request', (r) => { if (r.method() === 'POST' && /"kind":"cro"/.test(r.postData() || '')) cro.push(r.url()); });
+  await page.goto('kit.html?p=b&utm_source=e2e-test&octave_notrack=1');
+  expect(await page.locator('script[src$="assets/cro.js"]').getAttribute('data-site')).toBe('plaindpdp');
+  expect(await page.evaluate(() => [window.octaveCro.v('price'), document.documentElement.dataset.xpPrice, window.pdVariant, sessionStorage.getItem('oxp_price')])).toEqual(['b', 'b', 'b', 'b']);
   await expect(page.locator('[data-pro-label]')).toHaveText('Pro, ₹2,999 per month');
+  await expect(page.locator('thead [data-price-pro]')).toHaveText('₹2,999');
   expect(await page.locator('input[data-pro]').getAttribute('value')).toBe('pro-2999');
-  expect(await page.locator('nav a').first().getAttribute('href')).toBe('index.html?p=b');
-  await page.goto('index.html');
-  expect(new URL(page.url()).searchParams.get('p')).toMatch(/^[ab]$/);
+  // same tab, no parameter: the variant stays b
+  await page.locator('nav a').first().click();
+  await expect(page).toHaveURL(/index\.html$/);
+  expect(await page.evaluate(() => window.octaveCro.v('price'))).toBe('b');
+  await expect(page.locator('#kit [data-price-pro]')).toHaveText('₹2,999');
+  // ?p=a forces a (and its prices)
+  await page.goto('kit.html?p=a&octave_notrack=1');
+  expect(await page.evaluate(() => window.octaveCro.v('price'))).toBe('a');
+  await expect(page.locator('[data-pro-label]')).toHaveText('Pro, ₹999 per month');
+  expect(await page.locator('input[data-pro]').getAttribute('value')).toBe('pro-999');
+  await page.goto('privacy.html?octave_notrack=1');
+  await page.evaluate(() => window.dispatchEvent(new Event('pagehide')));
+  expect(cro, 'tests never send CRO batches').toEqual([]);
+});
+
+test('a new tab without ?p draws a or b and the prices follow it', async ({ browser }) => {
+  for (let i = 0; i < 2; i++) {
+    const ctx = await browser.newContext();
+    const page = await ctx.newPage();
+    await page.goto(new URL('kit.html?octave_notrack=1', test.info().project.use.baseURL).href);
+    const v = await page.evaluate(() => window.octaveCro.v('price'));
+    expect(v).toMatch(/^[ab]$/);
+    expect(new URL(page.url()).searchParams.get('p')).toBeNull();
+    await expect(page.locator('[data-pro-label]')).toHaveText(v === 'b' ? 'Pro, ₹2,999 per month' : 'Pro, ₹999 per month');
+    await ctx.close();
+  }
 });
 
 test('early-access form: consent required, then the row reaches the Sheet, then withdrawal erases it', async ({ page }, info) => {

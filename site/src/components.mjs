@@ -20,7 +20,7 @@ export const UI = {
     resGaps: 'Your gaps, most important first', resNoGaps: 'No gaps from your answers. Keep your consent records and review once a year.',
     resRef: 'Where it is in the law', resWeight: { 3: 'High priority', 2: 'Medium priority', 1: 'Lower priority' },
     resNext: 'Next steps', resPrint: 'Print or save as PDF',
-    resNote: 'Your answers stay in your browser. We only count, anonymously, that a check was completed.',
+    resNote: 'Your answers stay in your browser. We only keep anonymous daily totals (for example, that a check was completed), never your answers.',
     resHow: 'How the score works: Yes = full points, Partly = half, No or Not sure = zero. Each question has a weight from 1 to 3. Weight 3 goes to the duties with the highest penalties in the Schedule to the Act (security safeguards up to ₹250 crore, breach reporting and children\'s data up to ₹200 crore) and to notice and consent, which every other duty depends on (up to ₹50 crore). "Does not apply" answers are left out. The weights are our judgement, not an official method.',
   },
   hi: {
@@ -37,7 +37,7 @@ export const UI = {
     resGaps: 'आपकी कमियाँ, सबसे ज़रूरी पहले', resNoGaps: 'आपके उत्तरों में कोई कमी नहीं। सहमति के रिकॉर्ड रखें और साल में एक बार समीक्षा करें।',
     resRef: 'कानून में कहाँ', resWeight: { 3: 'उच्च प्राथमिकता', 2: 'मध्यम प्राथमिकता', 1: 'कम प्राथमिकता' },
     resNext: 'अगले कदम', resPrint: 'प्रिंट करें या PDF सेव करें',
-    resNote: 'आपके उत्तर आपके ब्राउज़र में ही रहते हैं। हम केवल गुमनाम रूप से गिनते हैं कि एक जाँच पूरी हुई।',
+    resNote: 'आपके उत्तर आपके ब्राउज़र में ही रहते हैं। हम केवल गुमनाम दैनिक कुल गिनती रखते हैं (जैसे कि एक जाँच पूरी हुई), आपके उत्तर कभी नहीं।',
     resHow: 'स्कोर कैसे बनता है: हाँ = पूरे अंक, आंशिक = आधे, नहीं या पता नहीं = शून्य। हर प्रश्न का भार 1 से 3 तक है। भार 3 उन दायित्वों को दिया गया है जिन पर अधिनियम की अनुसूची में सबसे बड़ा जुर्माना है (सुरक्षा उपाय ₹250 करोड़ तक, ब्रीच की सूचना और बच्चों का डेटा ₹200 करोड़ तक), और सूचना व सहमति को, जिन पर बाकी सारे दायित्व टिके हैं (₹50 करोड़ तक)। "लागू नहीं" वाले उत्तर गिने नहीं जाते। यह भार हमारा आकलन है, कोई आधिकारिक पद्धति नहीं।',
   },
 };
@@ -227,7 +227,7 @@ const F = {
 export function preorderForm(lang) {
   const f = F[lang];
   const langs = LANGS22.map(([c, en, hi]) => box('langs', c, lang === 'hi' ? hi : en, false)).join('');
-  return `<form id="preorder" class="preorder" novalidate data-lang="${lang}">
+  return `<form id="preorder" class="preorder" data-section="preorder" novalidate data-lang="${lang}">
 <h2 id="join">${f.title}</h2>
 <p class="small">${f.noPay}</p>
 <fieldset><legend>${f.offer}</legend>
@@ -238,7 +238,7 @@ export function preorderForm(lang) {
 <label class="fld" for="po-name"><span>${f.name}</span><input id="po-name" name="name" type="text" maxlength="80" autocomplete="name"></label>
 <label class="fld" for="po-business"><span>${f.business}</span><input id="po-business" name="business" type="text" maxlength="120" autocomplete="organization"></label>
 <label class="fld" for="po-btype"><span>${f.btype}</span><select id="po-btype" name="btype">${Object.entries(f.btypes).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select></label>
-<details class="langs"><summary>${f.langs}</summary><div class="chks chks-3">${langs}</div></details>
+<details class="langs" id="po-langs"><summary>${f.langs}</summary><div class="chks chks-3">${langs}</div></details>
 <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
 <div class="consent-box">
 <h3>${f.noticeTitle}</h3>

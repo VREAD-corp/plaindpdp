@@ -13,9 +13,11 @@ Not legal advice: a self-help template kit, not a law firm. Legal facts were che
 | `site/assets/core.js` | Scoring and notice builder, shared by the browser and the unit tests |
 | `site/src/check-data.mjs` | The 15 questions (EN/HI), weights and section/rule references |
 | `site/src/pages.mjs`, `components.mjs` | Page templates; `site/build.mjs` writes `dist/` |
-| `site/assets/app.js` | Price variant (`?p=a` = Pro ₹999/month, `?p=b` = ₹2,999/month; starter kit ₹4,999 in both), forms |
+| `site/assets/app.js` | Applies the price variant read from cro.js (`octaveCro.v('price')`: a = Pro ₹999/month, b = ₹2,999/month; starter kit ₹4,999 in both), forms, CRO goals (`check`, `notice`, `download`, `preorder`) |
+| `site/assets/xp.js`, `cro.js` | `OCTAVE_XP` config (experiment `price`, a/b 50/50 drawn once per tab in sessionStorage, `?p=a\|b` forces it; a file because the CSP forbids inline scripts) and Octave's behaviour counters + A/B framework, vendored byte-identical from octave-checkout `gas/web/cro.js` (no cookie, no id, daily totals; checked by `tests/unit/cro.check.mjs`) |
 | `site/assets/mesure.js` | Cookieless anonymous counters (same pattern as octave-checkout `gas/web/mesure.js`). Crawler/headless user agents (checked in the browser, never sent), `navigator.webdriver` and `octave_notrack=1` (query or localStorage, set by the e2e suite) are flagged and counted in the `Exclus` tab by reason; prerendered pages count only once opened. `summary` returns `stats` (visits), `excluded` and `views` per day (counted/excluded/raw) |
-| `gas/src/Code.js` | Apps Script web app: `track`, `preorder`, `rights`, `ping`, `summary`/`purge_tests` (admin key) |
+| `gas/src/Code.js` | Apps Script web app: `track`, `preorder`, `rights`, `ping`, `summary`/`purge_tests` (admin key), `cro`/`cro_init` |
+| `gas/src/Cro.js` | CRO module vendored byte-identical from octave-checkout (`track` with `kind: 'cro'` → tabs `Comportement`, `Experiences`; `cro` summary with the key whose SHA-256 is Script Property `CRO_KEY_SHA256`; `summary` also returns `cro` for today or `from`..`to`). Checked by `tests/unit/cro-gas.check.mjs` |
 
 ## Backend
 

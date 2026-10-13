@@ -5,10 +5,15 @@
  *   track     cookieless, anonymous counters (Stats tab), same pattern as octave-checkout Track.js.
  *             Hits flagged `excluded` by mesure.js (crawler or headless user agent, navigator.webdriver,
  *             our own tests with octave_notrack=1) go to the Exclus tab by reason instead.
+ *             With kind 'cro': the once-per-page behaviour batch of cro.js (Cro.js, vendored byte-identical from
+ *             octave-checkout): daily counters in the Comportement and Experiences tabs.
+ *   cro       aggregated behaviour and A/B summary (key whose SHA-256 is Script Property CRO_KEY_SHA256)
+ *   cro_init  POST only: stores the SHA-256 of the cro key once
  *   preorder  early-access sign-up with DPDP-style consent (Signups tab)
  *   rights    data-principal request: withdraw | erase | access | correct | grievance (Requests tab)
  *   ping      health check
- *   summary   counts for the operator (needs the admin key; never returns personal data)
+ *   summary   counts for the operator (needs the admin key; never returns personal data), with `cro`:
+ *             the CRO summary of today (or of from..to, yyyy-MM-dd)
  *   purge_tests  deletes rows created by automated tests (admin key)
  *
  * The spreadsheet is created on first use and its id kept in Script Properties (SHEET_ID).
@@ -40,6 +45,15 @@ var EXCL_KEYS = 6;
 // mesure.js, which search-engine renderers keep using.
 var EXCL_REASONS = ['webdriver', 'bot', 'notrack', 'legacy'];
 
+// CRO (Cro.js): same site and spreadsheet; experiment ids and variants of site/assets/xp.js (OCTAVE_XP).
+var CRO_SITES_ = APP.sites;
+var CRO_EXPERIMENTS_ = { price: ['a', 'b'] };
+var CRO_GOALS_ = ['check', 'notice']; // readiness check completed, notice generated (preorder, download are built in)
+var CRO_TZ_ = APP.tz;
+function croBook_() { return ss_(); }
+// Same pages as the Stats tab ('/check', not '/check.html').
+function croPage_(site, page) { return trackPage_(page); }
+
 function doGet(e) { return handle_(e, (e && e.parameter) || {}); }
 
 function doPost(e) {
@@ -52,7 +66,10 @@ function handle_(e, req) {
   var action = String((e && e.parameter && e.parameter.action) || req.action || '');
   try {
     switch (action) {
-      case 'track': return json_(track_(req));
+      // kind 'cro': the behaviour batch of cro.js, before the counter's own validation.
+      case 'track': return json_(req.kind === 'cro' ? croTrack_(req) : track_(req));
+      case 'cro': return json_(croAction_(req));
+      case 'cro_init': return json_(e && e.postData ? croInit_(req) : { ok: false, error: 'post_only' });
       case 'preorder': return json_(preorder_(req));
       case 'rights': return json_(rights_(req));
       case 'summary': return json_(summary_(req));
@@ -313,6 +330,8 @@ function summary_(req) {
     out.excluded[k] = (out.excluded[k] || 0) + Number(r[6] || 0);
     if (r[3] === 'view') { day(cell_(r[0])).excluded += Number(r[6] || 0); day(cell_(r[0])).raw += Number(r[6] || 0); }
   });
+  var re = /^\d{4}-\d{2}-\d{2}$/, today = istDate_(now_());
+  out.cro = croSummary_(re.test(String(req.from || '')) ? String(req.from) : today, re.test(String(req.to || '')) ? String(req.to) : today);
   if (req.email) out.hasEmail = su.getLastRow() >= 2 && su.getRange(2, 3, su.getLastRow() - 1, 1).getValues().some(function (r) { return String(r[0]) === String(req.email).toLowerCase(); });
   return out;
 }

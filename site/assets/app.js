@@ -7,25 +7,16 @@
   var track = function (ev) { try { if (window.pdTrack) window.pdTrack(ev); } catch (e) {} };
   var json = function (id) { try { return JSON.parse($('#' + id).textContent); } catch (e) { return {}; } };
 
-  /* ---- price variant: from ?p=a|b, else drawn once and written into the URL (no cookie, no storage) ---- */
+  /* ---- price variant: experiment 'price' of cro.js (assets/xp.js): drawn once per tab, kept in sessionStorage,
+     ?p=a|b forces it. Fallback if cro.js did not load: ?p, else a 50/50 draw for this page. ---- */
   var q = new URLSearchParams(location.search);
-  var variant = q.get('p');
-  if (variant !== 'a' && variant !== 'b') {
-    variant = Math.random() < 0.5 ? 'a' : 'b';
-    q.set('p', variant);
-    try { history.replaceState(null, '', location.pathname + '?' + q.toString() + location.hash); } catch (e) {}
-  }
+  var variant = window.octaveCro && window.octaveCro.v('price');
+  if (variant !== 'a' && variant !== 'b') variant = q.get('p') === 'a' || q.get('p') === 'b' ? q.get('p') : Math.random() < 0.5 ? 'a' : 'b';
   window.pdVariant = variant;
   $$('[data-price-pro]').forEach(function (el) { el.textContent = el.getAttribute('data-' + variant); });
   $$('[data-pro-label]').forEach(function (el) { el.textContent = el.getAttribute('data-' + variant); });
   $$('input[data-pro]').forEach(function (el) { el.value = variant === 'b' ? 'pro-2999' : 'pro-999'; });
-  // keep the variant on internal links
-  $$('a[href]').forEach(function (a) {
-    var h = a.getAttribute('href');
-    if (!h || /^(https?:|mailto:|#)/.test(h) || !/\.html(#.*)?$/.test(h)) return;
-    var parts = h.split('#');
-    a.setAttribute('href', parts[0] + '?p=' + variant + (parts[1] ? '#' + parts[1] : ''));
-  });
+  var goal = function (name) { try { if (window.octaveCro) window.octaveCro.goal(name); } catch (e) {} };
 
   // Apps Script can take 5 to 20 s to answer; one retry when it reports 'busy' or the network fails.
   var post = function (body, retried) {
@@ -77,7 +68,7 @@
       });
       $('#nogaps').hidden = r.gaps.length > 0;
       var res = $('#result'); res.hidden = false; res.setAttribute('data-score', r.pct); res.focus(); res.scrollIntoView({ block: 'start' });
-      track('check_complete');
+      track('check_complete'); goal('check');
     });
     $('#reset').addEventListener('click', function () { check.reset(); $('#result').hidden = true; started = false; window.scrollTo(0, 0); });
     $('#print').addEventListener('click', function () { window.print(); });
@@ -109,7 +100,7 @@
       $('#notice-out').innerHTML = window.PD.toHtml(current);
       $('#out-hi-note').hidden = current.lang !== 'hi';
       var out = $('#out'); out.hidden = false; out.focus(); out.scrollIntoView({ block: 'start' });
-      track('notice_generated');
+      track('notice_generated'); goal('notice');
     });
     var save = function (text, type, ext) {
       var a = d.createElement('a');
@@ -124,11 +115,11 @@
       if (navigator.clipboard) navigator.clipboard.writeText(t).then(done, done); else done();
       track('notice_copy');
     });
-    $('#dl-txt').addEventListener('click', function () { if (current) { save(window.PD.toText(current), 'text/plain;charset=utf-8', 'txt'); track('notice_download'); } });
+    $('#dl-txt').addEventListener('click', function () { if (current) { save(window.PD.toText(current), 'text/plain;charset=utf-8', 'txt'); track('notice_download'); goal('download'); } });
     $('#dl-html').addEventListener('click', function () {
       if (!current) return;
       save('<!doctype html><html lang="' + current.lang + '"><head><meta charset="utf-8"><title>' + current.title.replace(/</g, '&lt;') + '</title></head><body>' + window.PD.toHtml(current) + '</body></html>', 'text/html;charset=utf-8', 'html');
-      track('notice_download');
+      track('notice_download'); goal('download');
     });
   }
 
@@ -152,7 +143,7 @@
       }).then(function (r) {
         if (!r.ok) throw new Error(r.error);
         $('#po-ok').hidden = false; btn.hidden = true;
-        track('preorder_submit');
+        track('preorder_submit'); goal('preorder');
       }).catch(function () { err.textContent = pi.err; err.hidden = false; btn.disabled = false; btn.textContent = label; });
     });
   }
