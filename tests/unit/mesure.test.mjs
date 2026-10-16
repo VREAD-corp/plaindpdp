@@ -8,7 +8,7 @@ const src = fs.readFileSync(new URL('../../site/assets/mesure.js', import.meta.u
 const CHROME = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36';
 const GOOGLEBOT = 'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.7390.0 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
 
-function run({ ua = CHROME, webdriver = false, search = '', store = {}, prerendering = false, visibility = 'visible', dnt = '' } = {}) {
+function run({ ua = CHROME, webdriver = false, search = '', store = {}, prerendering = false, visibility = 'visible', dnt = '', hostname = 'dpdp.jalonel.com', pathname = '/check.html' } = {}) {
   const sent = [], listeners = {};
   const doc = {
     referrer: 'https://www.google.com/', prerendering, visibilityState: visibility,
@@ -17,7 +17,7 @@ function run({ ua = CHROME, webdriver = false, search = '', store = {}, prerende
   const ls = { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } };
   const ctx = {
     navigator: { userAgent: ua, webdriver, doNotTrack: dnt }, document: doc, localStorage: ls, innerWidth: 1200, pdVariant: 'a', URLSearchParams, JSON, Date, String,
-    location: { hostname: 'outils.vread.fr', pathname: '/plaindpdp/check.html', search },
+    location: { hostname, pathname, search },
     fetch: (u, o) => { sent.push(JSON.parse(o.body)); assert.equal(o.credentials, 'omit'); return Promise.resolve(); },
   };
   ctx.window = ctx;
@@ -63,4 +63,12 @@ test('prerendered pages count only once opened', () => {
   assert.equal(r.sent.length, 0);
   r.doc.visibilityState = 'visible'; r.fire('visibilitychange'); r.fire('visibilitychange');
   assert.equal(r.sent.length, 1);
+});
+
+test('counts on dpdp.jalonel.com and on the legacy outils.vread.fr host only, always as site plaindpdp', () => {
+  const j = run();
+  assert.deepEqual(j.sent.map((b) => [b.site, b.page]), [['plaindpdp', '/check.html']]);
+  assert.equal(run({ hostname: 'outils.vread.fr', pathname: '/plaindpdp/check.html' }).sent[0].site, 'plaindpdp');
+  assert.equal(run({ hostname: 'localhost' }).sent.length, 0);
+  assert.equal(run({ hostname: 'evil.jalonel.com.example' }).sent.length, 0);
 });

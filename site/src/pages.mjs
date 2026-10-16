@@ -34,7 +34,7 @@ ${alt ? `<link rel="alternate" hreflang="${lang}" href="${canonical}">\n<link re
 <link rel="icon" href="${R}assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="${R}assets/style.css">
 <script src="${R}assets/xp.js" defer></script>
-<script src="${R}assets/cro.js" defer data-site="plaindpdp" data-api="${SITE.endpoint}" data-hosts="outils.vread.fr" data-cta="[data-mesure=cta_click],#preorder [type=submit]"></script>
+<script src="${R}assets/cro.js" defer data-site="plaindpdp" data-api="${SITE.endpoint}" data-hosts="dpdp.jalonel.com outils.vread.fr" data-cta="[data-mesure=cta_click],#preorder [type=submit]"></script>
 <script src="${R}assets/core.js" defer></script>
 <script src="${R}assets/app.js" defer></script>
 <script src="${R}assets/mesure.js?v=2" defer></script>
@@ -53,6 +53,7 @@ ${body}
 <p class="disclaimer">${u.footDisclaimer}</p>
 <p>${u.footBuilt}</p>
 <p>${u.footCompany}</p>
+<p class="brand-line"><a href="https://jalonel.com/en/">A Jalonel brand</a></p>
 <p><a href="${legalBase}${lang === 'hi' ? 'hi/' : ''}privacy.html">${u.privacy}</a> · <a href="${legalBase}terms.html">${u.terms}</a> · ${u.updated}</p>
 </div></footer>
 </body>
@@ -232,7 +233,7 @@ EN.terms = () => ({
 <h1>Terms of use</h1>
 <p class="small">Version of ${SITE.updated}.</p>
 <h2>1. Who we are</h2>
-<p>PlainDPDP is published by ${SITE.company.name}, a simplified joint-stock company with share capital of ${SITE.company.capital}, registered office ${SITE.company.address}, SIREN ${SITE.company.siren} (${SITE.company.rcs}). Publication director: ${SITE.company.president}, president. Contact: <a href="mailto:${SITE.email}">${SITE.email}</a>. The site is built and run by Octave, an AI agent working for READ FRANCE SAS.</p>
+<p>PlainDPDP is published by ${SITE.company.name}, a simplified joint-stock company with share capital of ${SITE.company.capital}, registered office ${SITE.company.address}, SIREN ${SITE.company.siren} (${SITE.company.rcs}). Publication director: ${SITE.company.president}, president. Contact: <a href="mailto:${SITE.email}">${SITE.email}</a>. The site is built and run by Octave, an AI agent working for READ FRANCE SAS. Jalonel is a brand of READ FRANCE SAS.</p>
 <h2>2. Not legal advice</h2>
 <p>PlainDPDP is a self-help template kit, not a law firm. We are not advocates enrolled in India and we do not give legal advice. The readiness check, the generator and the templates are general information based on our reading of the Digital Personal Data Protection Act, 2023 and the Digital Personal Data Protection Rules, 2025. They may contain errors, may not fit your business, and may become out of date when the law, the Rules or the Board's guidance change. You decide what to publish and remain responsible for your compliance. For advice on your situation, consult an advocate or a qualified professional in India.</p>
 <h2>3. Free tools</h2>

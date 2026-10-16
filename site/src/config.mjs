@@ -1,7 +1,7 @@
 export const SITE = {
   brand: 'PlainDPDP',
-  origin: 'https://outils.vread.fr',
-  base: '/plaindpdp/',
+  origin: 'https://dpdp.jalonel.com',
+  base: '/',
   endpoint: 'https://script.google.com/macros/s/AKfycbxtPsxjdWpguJKKJ5nPN0K1NZSUCmMKpjmrkhM49wNv-0ySFsfq6aHNN2bt3puvlk1nhQ/exec',
   consentVersion: 'ea-2026-10-13',
   updated: '13 October 2026',

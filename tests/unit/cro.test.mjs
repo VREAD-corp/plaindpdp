@@ -28,7 +28,7 @@ test('every page loads xp.js then cro.js before the scripts that read the varian
     const html = layout({ lang, path: file, title, desc, body, alt, page });
     const order = ['assets/xp.js', 'assets/cro.js', 'assets/app.js', 'assets/mesure.js'].map((s) => html.indexOf(s));
     assert.ok(order.every((i, k) => i > 0 && (k === 0 || i > order[k - 1])), file + ' script order');
-    assert.ok(html.includes(`data-site="plaindpdp" data-api="${SITE.endpoint}" data-hosts="outils.vread.fr"`), file);
+    assert.ok(html.includes(`data-site="plaindpdp" data-api="${SITE.endpoint}" data-hosts="dpdp.jalonel.com outils.vread.fr"`), file);
     assert.ok(!/<script src="[^"]*cro\.js"[^>]*type="module"/.test(html), file);
   }
 });

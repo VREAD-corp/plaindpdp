@@ -7,7 +7,8 @@ import { PAGES, layout } from './src/pages.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const out = path.join(here, '..', 'dist');
-export const INDEXNOW_KEY = '16a95bc4e36dd4bfccdadbf4e9ef96ba';
+export const INDEXNOW_KEY = '5be19f56d46ca3d2553bee28ebfa8edd';
+const OLD_INDEXNOW_KEYS = ['16a95bc4e36dd4bfccdadbf4e9ef96ba'];
 
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(path.join(out, 'hi'), { recursive: true });
@@ -20,9 +21,11 @@ for (const [file, lang, page, fn, alt] of PAGES) {
   fs.writeFileSync(path.join(out, file), layout({ lang, path: file, title, desc, body, alt, page }));
   urls.push(SITE.origin + SITE.base + file.replace(/index\.html$/, ''));
 }
-fs.writeFileSync(path.join(out, '404.html'), layout({ lang: 'en', path: '404.html', page: '404', title: 'Page not found | PlainDPDP', desc: 'Page not found.', body: '<section class="wrap narrow"><h1>Page not found</h1><p>Try the <a href="/plaindpdp/check.html">readiness check</a> or the <a href="/plaindpdp/notice.html">notice generator</a>.</p></section>' }).replace(/href="(assets\/)/g, 'href="/plaindpdp/$1').replace(/src="(assets\/)/g, 'src="/plaindpdp/$1'));
+fs.writeFileSync(path.join(out, '404.html'), layout({ lang: 'en', path: '404.html', page: '404', title: 'Page not found | PlainDPDP', desc: 'Page not found.', body: '<section class="wrap narrow"><h1>Page not found</h1><p>Try the <a href="/check.html">readiness check</a> or the <a href="/notice.html">notice generator</a>.</p></section>' }).replace(/href="(assets\/)/g, 'href="/$1').replace(/src="(assets\/)/g, 'src="/$1'));
 fs.writeFileSync(path.join(out, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls.map((u) => '  <url><loc>' + u + '</loc><lastmod>' + SITE.updatedIso + '</lastmod></url>').join('\n') + '\n</urlset>\n');
 fs.writeFileSync(path.join(out, 'robots.txt'), 'User-agent: *\nAllow: /\nSitemap: ' + SITE.origin + SITE.base + 'sitemap.xml\n');
 fs.writeFileSync(path.join(out, INDEXNOW_KEY + '.txt'), INDEXNOW_KEY);
+for (const k of OLD_INDEXNOW_KEYS) fs.writeFileSync(path.join(out, k + '.txt'), k);
+fs.writeFileSync(path.join(out, 'CNAME'), new URL(SITE.origin).host + '\n');
 fs.writeFileSync(path.join(out, '.nojekyll'), '');
 console.log('built', PAGES.length + 1, 'pages into', out);
