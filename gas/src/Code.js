@@ -27,7 +27,7 @@ var APP = {
   adminHash: '30f4b699833760b9819edbac33b4c7655b6f97947af64cde565927a90d76c0f5',
   sites: ['plaindpdp'],
   events: ['view', 'cta_click', 'check_start', 'check_complete', 'notice_generated', 'notice_copy', 'notice_download', 'preorder_view', 'preorder_submit', 'lang_switch'],
-  ownHosts: ['dpdp.jalonel.com', 'jalonel.com', 'outils.vread.fr', 'vread-corp.github.io'],
+  ownHosts: ['dpdp.jalonel.com', 'outils.vread.fr', 'vread-corp.github.io'],
   offers: { 'pack-4999': 4999, 'pro-999': 999, 'pro-2999': 2999 },
   btypes: ['d2c', 'clinic', 'education', 'saas', 'services', 'agency', 'ca-cs', 'manufacturing', 'ngo', 'other'],
   langs: ['as', 'bn', 'brx', 'doi', 'gu', 'hi', 'kn', 'ks', 'kok', 'mai', 'ml', 'mni', 'mr', 'ne', 'or', 'pa', 'sa', 'sat', 'sd', 'ta', 'te', 'ur'],

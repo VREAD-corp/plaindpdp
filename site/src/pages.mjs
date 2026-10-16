@@ -199,7 +199,7 @@ EN.privacy = () => ({
   body: `<section class="wrap narrow prose" data-section="privacy">
 <h1>Privacy notice</h1>
 <p class="small">Version of ${SITE.updated}. Also in <a href="hi/privacy.html">Hindi</a>.</p>
-<p>${SITE.company.name}, ${SITE.company.address} (SIREN ${SITE.company.siren}), runs this site. For the early-access list we are the Data Fiduciary under India's DPDP Act 2023 and the controller under the EU GDPR. Questions, requests and grievances: <a href="mailto:${SITE.email}">${SITE.email}</a>. We reply within 30 days.</p>
+<p>${SITE.company.name}, ${SITE.company.address} (SIREN ${SITE.company.siren}), runs this site. Jalonel is a brand of READ FRANCE SAS. For the early-access list we are the Data Fiduciary under India's DPDP Act 2023 and the controller under the EU GDPR. Questions, requests and grievances: <a href="mailto:${SITE.email}">${SITE.email}</a>. We reply within 30 days.</p>
 <h2>1. The free tools</h2>
 <p>The readiness check and the notice generator run entirely in your browser. Your answers and the details you type are not sent to us or stored by us (we only count, without any content, that a form was started or submitted: see section 2).</p>
 <h2>2. Anonymous visit and behaviour counts</h2>
@@ -350,7 +350,7 @@ HI.privacy = () => ({
 ${hiNote}
 <h1>गोपनीयता सूचना</h1>
 <p class="small">13 अक्टूबर 2026 का संस्करण। <a href="../privacy.html">अंग्रेज़ी</a> में भी।</p>
-<p>${SITE.company.name}, ${SITE.company.address} (SIREN ${SITE.company.siren}) यह साइट चलाता है। अर्ली-एक्सेस सूची के लिए हम भारत के DPDP अधिनियम 2023 के तहत डेटा फ़िड्युशरी और EU GDPR के तहत कंट्रोलर हैं। प्रश्न, अनुरोध और शिकायतें: <a href="mailto:${SITE.email}">${SITE.email}</a>। हम 30 दिनों के भीतर उत्तर देते हैं।</p>
+<p>${SITE.company.name}, ${SITE.company.address} (SIREN ${SITE.company.siren}) यह साइट चलाता है। Jalonel, READ FRANCE SAS का एक ब्रांड है। अर्ली-एक्सेस सूची के लिए हम भारत के DPDP अधिनियम 2023 के तहत डेटा फ़िड्युशरी और EU GDPR के तहत कंट्रोलर हैं। प्रश्न, अनुरोध और शिकायतें: <a href="mailto:${SITE.email}">${SITE.email}</a>। हम 30 दिनों के भीतर उत्तर देते हैं।</p>
 <h2>1. मुफ़्त टूल</h2><p>तैयारी जाँच और सूचना जनरेटर पूरी तरह आपके ब्राउज़र में चलते हैं। आपके उत्तर और भरी गई जानकारी हमें नहीं भेजी जाती और हम उसे स्टोर नहीं करते (हम केवल, बिना किसी सामग्री के, गिनते हैं कि कोई फ़ॉर्म शुरू या जमा हुआ: भाग 2 देखें)।</p>
 <h2>2. गुमनाम विज़िट और व्यवहार गिनती</h2><p>हम बिना कुकी और बिना किसी पहचानकर्ता के विज़िट गिनते हैं। हर पेज भेजता है: पेज का पाथ, घटना (जैसे "जाँच पूरी हुई"), रेफ़र करने वाली वेबसाइट का डोमेन, लिंक के कैंपेन टैग, दिखाया गया कीमत संस्करण (a या b) और क्या स्क्रीन 768 पिक्सेल से संकरी है।</p>
 <p>साइट सुधारने के लिए हर पेज एक बार यह छोटी सूची भी भेजता है: पेज कितना स्क्रॉल हुआ, कौन-से हिस्से देखे गए, किसी मुख्य बटन पर पहले क्लिक से पहले का समय (जैसे "10 सेकंड से कम"), क्या कोई फ़ॉर्म शुरू या जमा हुआ और आख़िरी छुए गए फ़ील्ड का नाम (जैसे "bizName", उसमें लिखा गया कभी नहीं), कौन-से खुलने वाले हिस्से खोले गए, दूसरी वेबसाइटों के लिंक का डोमेन, तकनीकी त्रुटियाँ (त्रुटि संदेश का गुमनाम फ़िंगरप्रिंट), पेज की गति (Core Web Vitals: अच्छा, सुधार चाहिए या खराब) और एक ही चीज़ पर बार-बार क्लिक।</p>
