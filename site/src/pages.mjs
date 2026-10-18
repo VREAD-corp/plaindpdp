@@ -87,8 +87,8 @@ function sampleNotice(lang) {
 const EN = {};
 
 EN.index = () => ({
-  title: 'PlainDPDP: DPDP Act readiness check and privacy notice generator for Indian SMEs',
-  desc: 'Free 15-question DPDP readiness check with a scored gap list, and a free DPDP privacy-notice generator in English and Hindi. Full template kit ₹4,999 in early access. Not legal advice.',
+  title: 'DPDP Rules 2025 (G.S.R. 843(E)) dates and readiness check for Indian SMEs | PlainDPDP',
+  desc: 'Notification G.S.R. 843(E) of 13 November 2025: most DPDP duties apply eighteen months later, from 13 May 2027. Free 15-question readiness check and privacy-notice generator (English, Hindi). Not legal advice.',
   body: `<section class="hero" id="hero"><div class="wrap hero-in">
 <div class="hero-copy">
 <p class="kicker">India · Digital Personal Data Protection Act, 2023</p>
