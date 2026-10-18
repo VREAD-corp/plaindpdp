@@ -39,3 +39,11 @@ test('Apps Script: no Vread host, own hosts = the Jalonel host only, every e-mai
   const code = fs.readFileSync(path.join(root, 'gas/src/Code.js'), 'utf8');
   assert.match(code, /ownHosts: \['dpdp\.jalonel\.com'\]/);
 });
+
+test('served sources: no GitHub repository, source-code, issues or release links (only the GitHub Pages host and its privacy statement)', () => {
+  for (const f of SERVED.flatMap(files).filter((x) => TEXT.test(x))) {
+    const src = fs.readFileSync(f, 'utf8');
+    assert.doesNotMatch(src, /github\.com\/VREAD-corp|vread-corp\.github\.io|\/releases\/download\/|github\.com\/[^"'\s]*\/issues|code source|source code|codeRepository/i, path.relative(root, f));
+    assert.deepEqual((src.match(/https?:\/\/[a-z.]*github\.com[^"'\s<)]*/gi) || []).filter((u) => !/^https:\/\/docs\.github\.com\/en\/site-policy\//.test(u)), [], path.relative(root, f));
+  }
+});
