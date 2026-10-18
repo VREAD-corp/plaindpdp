@@ -1,7 +1,7 @@
 /*! PlainDPDP anonymous audience: no cookie, no identifier, no IP stored. Same pattern as octave-checkout gas/web/mesure.js */
 ((n,l,d)=>{let q=new URLSearchParams(l.search),A=(k,f)=>d.addEventListener(k,f,!0),b,t,x='',s,go;
 window.pdTrack=()=>{};
-if(n.doNotTrack=='1'||n.globalPrivacyControl||!/^(dpdp\.jalonel\.com|outils\.vread\.fr)$/.test(l.hostname))return;
+if(n.doNotTrack=='1'||n.globalPrivacyControl||l.hostname!='dpdp.jalonel.com')return;
 // Not a visit (counted apart, by reason): our tests (?octave_notrack=1, remembered here; =0 clears), automated browsers, crawlers. The user agent is read here, never sent.
 try{s=localStorage;if(q.has('octave_notrack'))q.get('octave_notrack')=='1'?s.setItem('octave_notrack','1'):s.removeItem('octave_notrack');if(s.getItem('octave_notrack')=='1')x='notrack'}catch{}
 if(!x&&q.get('octave_notrack')=='1')x='notrack';

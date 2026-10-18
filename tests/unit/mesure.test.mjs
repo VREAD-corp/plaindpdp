@@ -65,10 +65,11 @@ test('prerendered pages count only once opened', () => {
   assert.equal(r.sent.length, 1);
 });
 
-test('counts on dpdp.jalonel.com and on the legacy outils.vread.fr host only, always as site plaindpdp', () => {
+test('counts on dpdp.jalonel.com only, always as site plaindpdp', () => {
   const j = run();
   assert.deepEqual(j.sent.map((b) => [b.site, b.page]), [['plaindpdp', '/check.html']]);
-  assert.equal(run({ hostname: 'outils.vread.fr', pathname: '/plaindpdp/check.html' }).sent[0].site, 'plaindpdp');
+  assert.equal(run({ hostname: 'dpdp.jalonel.com', pathname: '/hi/check.html' }).sent[0].site, 'plaindpdp');
+  assert.equal(run({ hostname: 'other.example', pathname: '/plaindpdp/check.html' }).sent.length, 0);
   assert.equal(run({ hostname: 'localhost' }).sent.length, 0);
   assert.equal(run({ hostname: 'evil.jalonel.com.example' }).sent.length, 0);
 });

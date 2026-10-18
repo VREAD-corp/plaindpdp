@@ -34,7 +34,7 @@ ${alt ? `<link rel="alternate" hreflang="${lang}" href="${canonical}">\n<link re
 <link rel="icon" href="${R}assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="${R}assets/style.css">
 <script src="${R}assets/xp.js" defer></script>
-<script src="${R}assets/cro.js" defer data-site="plaindpdp" data-api="${SITE.endpoint}" data-hosts="dpdp.jalonel.com outils.vread.fr" data-cta="[data-mesure=cta_click],#preorder [type=submit]"></script>
+<script src="${R}assets/cro.js" defer data-site="plaindpdp" data-api="${SITE.endpoint}" data-hosts="dpdp.jalonel.com" data-cta="[data-mesure=cta_click],#preorder [type=submit]"></script>
 <script src="${R}assets/core.js" defer></script>
 <script src="${R}assets/app.js" defer></script>
 <script src="${R}assets/mesure.js?v=2" defer></script>

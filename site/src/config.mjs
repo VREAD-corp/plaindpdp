@@ -6,7 +6,7 @@ export const SITE = {
   consentVersion: 'ea-2026-10-13',
   updated: '13 October 2026',
   updatedIso: '2026-10-13',
-  email: 'octave@vread.fr',
+  email: 'contact@jalonel.com',
   company: {
     name: 'READ FRANCE SAS',
     address: '11 rue Rouvet, 75019 Paris, France',
