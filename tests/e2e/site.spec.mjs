@@ -22,6 +22,10 @@ test('no horizontal scroll and no console errors on every page', async ({ page }
     expect(await page.evaluate(() => document.documentElement.scrollWidth), p).toBeLessThanOrEqual(page.viewportSize().width);
     await expect(page.locator('footer .disclaimer')).toContainText(p.startsWith('hi') ? 'कानूनी सलाह नहीं' : 'not a law firm');
     await expect(page.locator('footer')).toContainText('988 741 773');
+    // paused since 2026-10-24: one robots tag (noindex) and the banner on every page
+    expect(await page.locator('meta[name=robots]').evaluateAll((m) => m.map((x) => x.content)), p).toEqual(['noindex']);
+    await expect(page.locator('body > .jal-pause')).toContainText('This service is paused.');
+    await expect(page.locator('.jal-pause a')).toHaveAttribute('href', 'https://jalonel.com/en/');
   }
   await shot(page, 'home-hi', info);
   expect(errors).toEqual([]);
@@ -122,33 +126,21 @@ test('a new tab without ?p draws a or b and the prices follow it', async ({ brow
   }
 });
 
-test('early-access form: consent required, then the row reaches the Sheet, then withdrawal erases it', async ({ page }, info) => {
-  test.skip(!LIVE || !key, 'live only (needs the admin key to read the Sheet)');
-  const email = `e2e+${info.project.name}-${Date.now()}@example.com`;
-  await page.goto('kit.html?p=b&utm_source=e2e-test&utm_medium=test');
-  await page.fill('#po-email', email);
-  await page.fill('#po-name', 'E2E Test');
-  await page.fill('#po-business', 'Test Traders');
-  await page.selectOption('#po-btype', 'clinic');
-  await page.locator('input[name=offer][value=pro-2999]').check();
-  await page.locator('details.langs summary').click();
-  await page.locator('input[name=langs][value=ta]').check();
-  await page.getByRole('button', { name: /Join early access/ }).click();
-  await expect(page.locator('#po-error')).toContainText('consent');
-  await page.locator('#po-consent').check();
-  await page.getByRole('button', { name: /Join early access/ }).click();
-  await expect(page.locator("#po-ok")).toBeVisible({ timeout: 75_000 });
-  await shot(page, 'preorder-ok', info);
-  let s = await api({ action: 'summary', key, email });
-  expect(s.ok).toBe(true);
-  expect(s.hasEmail).toBe(true);
-  // withdrawal from the privacy page
-  await page.goto('privacy.html?p=b');
-  await page.fill('#r-email', email);
-  await page.getByRole('button', { name: 'Send request' }).click();
-  await expect(page.locator('#r-ok')).toContainText("removed", { timeout: 75_000 });
-  s = await api({ action: 'summary', key, email });
-  expect(s.hasEmail).toBe(false);
+test('early-access form is closed while paused: fields disabled, nothing is sent', async ({ page }) => {
+  const posts = [];
+  page.on('request', (r) => { if (r.method() === 'POST' && /"action":"preorder"/.test(r.postData() || '')) posts.push(r.url()); });
+  for (const p of ['kit.html', 'hi/kit.html']) {
+    await page.goto(p + '?p=a&octave_notrack=1');
+    await expect(page.locator('#preorder .paused-note')).toHaveText('New requests are closed while the service is paused.');
+    await expect(page.locator('#po-email')).toBeDisabled();
+    await expect(page.locator('#preorder button[type=submit]')).toBeDisabled();
+    await page.locator('#preorder').evaluate((f) => f.requestSubmit());
+    await expect(page.locator('#po-ok')).toBeHidden();
+  }
+  // the rights / withdrawal form stays open
+  await page.goto('privacy.html?octave_notrack=1');
+  await expect(page.locator('#r-email')).toBeEnabled();
+  expect(posts).toEqual([]);
 });
 
 test('anonymous tracking: our test hits reach the excluded counters, not the visits', async ({ page }) => {

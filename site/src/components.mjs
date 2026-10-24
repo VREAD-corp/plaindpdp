@@ -227,8 +227,11 @@ const F = {
 export function preorderForm(lang) {
   const f = F[lang];
   const langs = LANGS22.map(([c, en, hi]) => box('langs', c, lang === 'hi' ? hi : en, false)).join('');
-  return `<form id="preorder" class="preorder" data-section="preorder" novalidate data-lang="${lang}">
+  // Paused since 2026-10-24 (founders' decision): the form stays visible but accepts no new request.
+  return `<form id="preorder" class="preorder" data-section="preorder" novalidate data-lang="${lang}" data-paused="1">
 <h2 id="join">${f.title}</h2>
+<p class="paused-note"${lang === 'en' ? '' : ' lang="en"'}>New requests are closed while the service is paused.</p>
+<fieldset class="paused-fs" disabled>
 <p class="small">${f.noPay}</p>
 <fieldset><legend>${f.offer}</legend>
 <label class="offer"><input type="radio" name="offer" value="pack-4999" checked> <span><strong>${f.pack(SITE.prices.pack)}</strong><br><span class="small">${f.packSub}</span></span></label>
@@ -247,6 +250,7 @@ export function preorderForm(lang) {
 </div>
 <p id="po-error" class="error" role="alert" hidden></p>
 <div class="actions"><button type="submit" class="btn" data-sending="${esc(f.sending)}">${f.submit}</button></div>
+</fieldset>
 <p id="po-ok" class="ok" role="status" hidden>${f.ok}</p>
 <script type="application/json" id="po-i18n">${JSON.stringify({ err: f.err, errConsent: f.errConsent })}</script>
 </form>`;

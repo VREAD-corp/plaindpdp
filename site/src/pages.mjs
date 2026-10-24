@@ -22,6 +22,7 @@ export function layout({ lang, path, title, desc, body, alt, page }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; form-action 'none'; base-uri 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${canonical}">
@@ -41,6 +42,7 @@ ${alt ? `<link rel="alternate" hreflang="${lang}" href="${canonical}">\n<link re
 </head>
 <body data-page="${page}">
 <a class="skip" href="#main">${u.skip}</a>
+<div class="jal-pause" role="note"${lang === 'en' ? '' : ' lang="en"'}><p>This service is paused. Other tools: <a href="https://jalonel.com/en/">jalonel.com</a></p></div>
 <header class="top"><div class="wrap top-in">
 <a class="logo" href="index.html" aria-label="PlainDPDP home"><span class="logo-mark" aria-hidden="true">§</span>PlainDPDP</a>
 <nav class="nav" aria-label="Main">${nav}</nav>

@@ -130,6 +130,7 @@
     var pi = json('po-i18n');
     po.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (po.getAttribute('data-paused')) return; // paused since 2026-10-24: no new request is sent
       var err = $('#po-error'), btn = $('button[type=submit]', po);
       err.hidden = true;
       if (!po.email.value || !po.email.checkValidity()) { err.textContent = pi.err; err.hidden = false; po.email.focus(); return; }

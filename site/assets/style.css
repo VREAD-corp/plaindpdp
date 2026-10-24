@@ -106,3 +106,9 @@ input[type=text],input[type=email],input[type=tel],input[type=number],input[type
  .chks-3{grid-template-columns:repeat(3,1fr)}
 }
 @media print{.top,.foot,.check,.actions,.next,.lang{display:none}.result{border:0}body{background:#fff}}
+/* Paused since 2026-10-24 */
+.jal-pause{background:#f1f1ee;border-bottom:1px solid #cfcfc8;color:#1f2a33;font-size:.95rem;padding:.6rem 1rem;text-align:center}
+.jal-pause p{margin:0}
+.jal-pause a{color:inherit;text-decoration:underline}
+.paused-note{font-weight:600;color:var(--text)}
+.paused-fs{border:0;margin:0;padding:0;min-width:0}

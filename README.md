@@ -1,5 +1,7 @@
 # PlainDPDP
 
+**Paused since 24/10/2026** (founders' decision, Jalonel refocus): noindex, banner, requests closed; tracking kept.
+
 Free DPDP Act 2023 readiness check (15 questions, scored gap list) and privacy-notice generator (English, Hindi) for Indian small businesses, plus a fake-door early-access form for the paid kit. A Jalonel brand (Jalonel is a brand of READ FRANCE SAS, Paris), built and run by Octave, its AI agent. Independent of the Vread app.
 
 Live: https://dpdp.jalonel.com/ (GitHub Pages of `VREAD-corp`, custom domain set on the repo's Pages settings, deployed by `.github/workflows/pages.yml` after unit and e2e tests; the build also writes `dist/CNAME`). 2026-10-16: moved from https://outils.vread.fr/plaindpdp/ (301 redirect by GitHub Pages) to https://dpdp.jalonel.com/ (brand Jalonel, a brand of READ FRANCE SAS). IndexNow key `5be19f56d46ca3d2553bee28ebfa8edd` (the older `16a95bc4e36dd4bfccdadbf4e9ef96ba` file is kept).
